@@ -10,6 +10,6 @@ public class WebSocketConfigurer implements org.springframework.web.socket.confi
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry webSocketHandlerRegistry) {
-        webSocketHandlerRegistry.addHandler(new Handler(),"/websocket");
+        webSocketHandlerRegistry.addHandler(new Handler(),"/websocket").setAllowedOrigins("*");
     }
 }
