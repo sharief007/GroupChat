@@ -74,7 +74,8 @@ $("#openImageChooser").click(function (e) {
   });
 
 
-  $("#linkPreviewButton").on("click",function (){
+  $("#previewLinkForm").on("submit",function (e){
+    e.preventDefault();
     let URL = $("#URL").val();
     const platform = $("#exampleFormControlSelect2").val();
     if (URL.toString() !== '') {
