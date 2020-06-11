@@ -1,0 +1,21 @@
+.msg-div {
+	padding: 5px;
+	display: grid;
+	grid-template-columns: 85%;
+}
+.sent {
+	justify-content: end;
+	justify-items: end;
+}
+.receive {
+	justify-items: start;
+}
+.message-text {
+	padding: 5px 15px;
+}
+.receive .message-text {
+	border-radius: 0px 15px 15px 15px;
+}
+.sent .message-text {
+	border-radius: 15px 0 15px 15px;
+}
