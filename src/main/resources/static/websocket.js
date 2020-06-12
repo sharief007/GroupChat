@@ -104,6 +104,11 @@ function addTextMessage(jsonObject) {
       class: 'message-text bg-primary text-light'
     }).text(jsonObject.content)
     ).appendTo("#chatBody");
+    
+    
+    var audio = $("#imageAudio");
+    audio.play();
+    
   } else {
     let metadata = $("<div/>").append($("<small>").text(jsonObject.user+"\t"),$("<small>").text(jsonObject.time));
     $("<div/>",{
@@ -111,6 +116,11 @@ function addTextMessage(jsonObject) {
     }).append(metadata, $("<div/>",{
       class: 'message-text bg-light'
     }).text(jsonObject.content)).appendTo("#chatBody");
+    
+    
+    var audio = $("#imageAudio2");
+    audio.play();
+    
   }
 }
 
@@ -217,3 +227,4 @@ function addLinkMessage(jsonObject) {
     }
   }
 }
+
