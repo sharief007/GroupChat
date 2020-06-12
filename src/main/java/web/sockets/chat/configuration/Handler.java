@@ -1,6 +1,7 @@
 package web.sockets.chat.configuration;
 
 import org.json.simple.JSONObject;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.BinaryWebSocketHandler;
 
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+@Async
 public class Handler extends BinaryWebSocketHandler {
 
     List<WebSocketSession> sessions = new CopyOnWriteArrayList();
@@ -26,6 +28,7 @@ public class Handler extends BinaryWebSocketHandler {
     }
 
     @Override
+    @Async
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
         System.out.println(message.getPayload());
         this.sessions.forEach(s -> {
@@ -45,13 +48,28 @@ public class Handler extends BinaryWebSocketHandler {
 
      @Override
      protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) throws Exception {
-         System.out.println("Blob Content length :"+ message.getPayloadLength());
-        sessions.forEach(s-> {
-                 try {
-                     s.sendMessage(message);
-                 } catch (IOException e) {
-                     e.printStackTrace();
-                 }
-             });
+         sessions.forEach(s-> {
+             try {
+                 s.sendMessage(message);
+             } catch (IOException e) {
+                 e.printStackTrace();
+             }
+         });
      }
+
+    @Override
+    protected void handlePongMessage(WebSocketSession session, PongMessage message) throws Exception {
+        sessions.forEach(s-> {
+            try {
+                s.sendMessage(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    @Override
+    public boolean supportsPartialMessages() {
+        return false;
+    }
 }

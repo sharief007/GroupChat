@@ -48,13 +48,13 @@ $("#getInForm").on("submit",async (e)=> {
             break;
         }
       }catch (err) {
-        console.log(event.data);
-        handleBlobContent(event.data);
+        console.log(err);
+        //handleVideoBlob(event.data);
       }
     }
 
     websocket.onclose = (ev)=> {
-      console.log('connection closed');
+      console.log(ev.reason+'connection closed');
     }
 
     $("#getInModal").modal("toggle");
@@ -85,8 +85,12 @@ function showLeftedUser(data) {
 function handleMessage(jsonData) {
   if (jsonData.type==="text/plain") {
     addTextMessage(jsonData);
-  } else {
-    
+  } else if (jsonData.type==="image"){
+    addImageMessage(jsonData);
+  }else if (jsonData.type==="video"){
+    addVideoMessage(jsonData);
+  } else if (jsonData.type==="text/link"){
+    addLinkMessage(jsonData)
   }
 }
 
@@ -110,14 +114,106 @@ function addTextMessage(jsonObject) {
   }
 }
 
-function handleBlobContent(file) {
-  let url = window.URL.createObjectURL(file);
-  console.log(url);
-  //if (file.type.toString().includes("image")){
-    $("<img/>",{
-      src: url
-    }).appendTo("#chatBody");
-    console.log("image inserted");
-  //}
-  //console.log("not inserted")
+
+function addImageMessage(jsonObject) {
+  let sent = jsonObject["id"].toString()===this.id;
+  if (sent)
+  {
+    $("<div>",{
+      class: "msg-div sent"
+    }).append($("<img/>",{
+      class: "img-fluid img-thumbnail",
+      src: jsonObject.content.toString()
+    })).appendTo("#chatBody");
+  }
+  else {
+    let metadata = $("<div/>").append($("<small>").text(jsonObject.user+"\t"),$("<small>").text(jsonObject.time));
+    $("<div>",{
+      class: "msg-div receive"
+    }).append(metadata,$("<img>",{
+      class: "img-fluid img-thumbnail",
+      src: jsonObject.content.toString()
+    })).appendTo("#chatBody");
+  }
+}
+
+
+function addVideoMessage(jsonObject) {
+  let sent = jsonObject["id"].toString()===this.id;
+  if (sent)
+  {
+    $("<div>",{
+      class: "msg-div sent"
+    }).append($("<video>",{
+      height: "100%",
+      width: "100%",
+      controls: true,
+      srcObject: jsonObject.content.toString()
+    })).appendTo("#chatBody");
+  }
+  else {
+    let metadata = $("<div/>").append($("<small>").text(jsonObject.user+"\t"),$("<small>").text(jsonObject.time));
+    $("<div>",{
+      class: "msg-div receive"
+    }).append(metadata,$("<video>",{
+      height: "100%",
+      width: "100%",
+      controls: true
+    }).append("<source>",{
+      src:jsonObject.content.toString(),
+      type:jsonObject.type
+    })).appendTo("#chatBody");
+  }
+}
+
+function addLinkMessage(jsonObject) {
+  let sent = (jsonObject.id === this.id);
+  let platform = jsonObject.platform;
+  if (platform==="youtube"||platform==="facebook"){
+    if(sent)
+    {
+      $("<div/>",{
+        class: 'msg-div sent'
+      }).append($("<div/>",{
+            class: 'embed-responsive embed-responsive-16by9'
+          }).append("<iframe>",{
+            src: jsonObject.content.toString(),
+            class: "embed-responsive-item"
+          })
+      ).appendTo("#chatBody");
+    } else {
+      let metadata = $("<div/>").append($("<small>").text(jsonObject.user+"\t"),$("<small>").text(jsonObject.time));
+      $("<div/>",{
+        class: 'msg-div receive'
+      }).append(metadata, $("<div/>",{
+            class: 'embed-responsive embed-responsive-16by9'
+          }).append("<iframe>",{
+            src: jsonObject.content,
+            class: "embed-responsive-item"
+          })
+      ).appendTo("#chatBody");
+    }
+  }
+  else if(platform==="others"){
+    if(sent)
+    {
+      $("<div/>",{
+        class: 'msg-div sent'
+      }).append($("<a/>",{
+            class: 'message-text bg-primary text-light',
+            href: jsonObject.content.toString(),
+            target: "_blank"
+          }).text(jsonObject.content)
+      ).appendTo("#chatBody");
+    } else {
+      let metadata = $("<div/>").append($("<small>").text(jsonObject.user+"\t"),$("<small>").text(jsonObject.time));
+      $("<div/>",{
+        class: 'msg-div receive'
+      }).append(metadata, $("<a/>",{
+        class: 'message-text bg-light',
+        href: jsonObject.content.toString(),
+        target: "_blank"
+      }).text(jsonObject.content)).appendTo("#chatBody");
+    }
+  }
 }
