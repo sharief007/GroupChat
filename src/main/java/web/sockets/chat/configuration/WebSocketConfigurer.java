@@ -13,7 +13,7 @@ public class WebSocketConfigurer implements org.springframework.web.socket.confi
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry webSocketHandlerRegistry) {
-        webSocketHandlerRegistry.addHandler(new Handler(),"/websocket").setAllowedOrigins("*").addInterceptors(new HttpSessionHandshakeInterceptor());
+        webSocketHandlerRegistry.addHandler(new Handler(),"/websocket").setAllowedOrigins("*");
     }
     @Bean
     public ServletServerContainerFactoryBean createWebSocketContainer() {
