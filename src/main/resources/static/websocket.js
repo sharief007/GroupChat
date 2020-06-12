@@ -106,7 +106,7 @@ function addTextMessage(jsonObject) {
     ).appendTo("#chatBody");
     
     
-    var audio = $("#imageAudio");
+    var audio = $("#messageAudio");
     audio.play();
     
   } else {
@@ -118,7 +118,7 @@ function addTextMessage(jsonObject) {
     }).text(jsonObject.content)).appendTo("#chatBody");
     
     
-    var audio = $("#imageAudio2");
+    var audio = $("#messageAudio2");
     audio.play();
     
   }
