@@ -25,7 +25,7 @@ $("#openImageChooser").click(function (e) {
           class: "img-thumbnail"
         }),
         $("<p>").text(file.name)
-      ]).appendTo("#imagePreviewModalBody")
+      ]).appendTo("#imagePreviewModalBody");
     }
   }
 
@@ -102,3 +102,20 @@ $("#openImageChooser").click(function (e) {
         alert("Please paste url");
     }
   });
+
+
+
+$("#openGetOutModal").on("click", ()=> {
+    $("#getOutModal").modal("toggle");
+})
+
+$("#getOutButton").on("click",()=> {
+    let messageOptions = {
+        id: id,
+        user: username,
+        action: "left"
+    }
+    websocket.send(JSON.stringify(messageOptions));
+    websocket.close();
+    $("#getOutModal").modal("toggle");
+})

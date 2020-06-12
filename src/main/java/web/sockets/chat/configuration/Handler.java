@@ -1,9 +1,7 @@
 package web.sockets.chat.configuration;
 
-import org.springframework.web.socket.BinaryMessage;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.WebSocketMessage;
-import org.springframework.web.socket.WebSocketSession;
+import org.json.simple.JSONObject;
+import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.BinaryWebSocketHandler;
 
 import java.io.IOException;
@@ -14,14 +12,22 @@ public class Handler extends BinaryWebSocketHandler {
 
     List<WebSocketSession> sessions = new CopyOnWriteArrayList();
 
+
+
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         sessions.add(session);
-        System.out.println("Connected :"+session);
+        JSONObject json = new JSONObject();
+        json.put("id",session.getId());
+        json.put("action","connection");
+        System.out.println(json);
+        session.sendMessage(new TextMessage(json.toJSONString()));
+        System.out.println("Connected :" + sessions.size());
     }
 
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
+        System.out.println(message.getPayload());
         this.sessions.forEach(s -> {
             try {
                 s.sendMessage(message);
@@ -29,23 +35,23 @@ public class Handler extends BinaryWebSocketHandler {
                 e.printStackTrace();
             }
         });
-        System.out.println(message);
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         sessions.remove(session);
-        System.out.println("Closed :"+session);
+        System.out.println("Closed :"+sessions.size());
     }
 
-    @Override
-    protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) throws Exception {
-            sessions.forEach(s-> {
-                try {
-                    s.sendMessage(message);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-    }
+     @Override
+     protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) throws Exception {
+         System.out.println("Blob Content length :"+ message.getPayloadLength());
+        sessions.forEach(s-> {
+                 try {
+                     s.sendMessage(message);
+                 } catch (IOException e) {
+                     e.printStackTrace();
+                 }
+             });
+     }
 }
