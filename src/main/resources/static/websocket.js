@@ -69,6 +69,10 @@ function showJoinedUser(data)
   }).text(`${data.user} joined the group`)
   .appendTo("#chatBody");
 
+  $('#chatBody').animate({
+   scrollTop: $('#chatBody').get(0).scrollHeight}, 2000); 
+
+
   //add user in grouplist
     $("<a/>",{
         class: "list-group-item list-group-item-action",
@@ -81,6 +85,10 @@ function showLeftedUser(data) {
     class: "alert alert-danger text-center",
   }).text(`${data.user} left the group `)
       .appendTo("#chatBody");
+
+   $('#chatBody').animate({
+   scrollTop: $('#chatBody').get(0).scrollHeight}, 2000); 
+
 }
 
 function handleMessage(jsonData) {
@@ -108,7 +116,8 @@ function addTextMessage(jsonObject) {
     }).text(jsonObject.content)
     ).appendTo("#chatBody");
     
-    $("#chatBody").scrollTop = $("#chatBody").scrollHeight;
+    $('#chatBody').animate({
+   scrollTop: $('#chatBody').get(0).scrollHeight}, 1000); 
     
   } else {
     
@@ -120,7 +129,8 @@ function addTextMessage(jsonObject) {
       class: 'message-text bg-light'
     }).text(jsonObject.content)).appendTo("#chatBody");
     
-    $("#chatBody").scrollTop = $("#chatBody").scrollHeight;
+    $('#chatBody').animate({
+   scrollTop: $('#chatBody').get(0).scrollHeight}, 2000); 
     
   }
 }
