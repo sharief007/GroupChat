@@ -117,5 +117,10 @@ $("#getOutButton").on("click",()=> {
     }
     websocket.send(JSON.stringify(messageOptions));
     websocket.close();
+    $("#chatBody").html(" ");
+    $("#page-content").hide();
     $("#getOutModal").modal("toggle");
+    $("#getInModal").modal({
+    backdrop: false
+  });
 })
