@@ -210,10 +210,10 @@
       </div>
     </div>
   </div>
-    <audio id="messageAudio" style="display:none">
+    <audio id="messageAudio">
         <source src="message.mp3" type="audio/mpeg">
     </audio>
-    <audio id="messageAudio2" style="display:none">
+    <audio id="messageAudio2">
         <source src="messenger_web.mp3" type="audio/mpeg">
     </audio>
 </body>
@@ -229,6 +229,12 @@ function w3_open() {
 
 function w3_close() {
   document.getElementById("mySidebar").style.display = "none";
+}
+function playAudio1(){
+  document.getElementById("messageAudio").play();
+}
+function playAudio2(){
+  document.getElementById("messageAudio2").play();
 }
 </script>
 <script src="websocket.js"></script>
