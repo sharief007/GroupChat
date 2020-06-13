@@ -27,11 +27,25 @@ public class Handler extends BinaryWebSocketHandler {
         System.out.println("Connected :" + sessions.size());
     }
 
+//    @Override
+//    @Async
+//    public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
+//        System.out.println(message.getPayload());
+//        this.sessions.forEach(s -> {
+//            try {
+//                s.sendMessage(message);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        });
+//    }
+
+
     @Override
-    @Async
-    public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) {
+        System.out.println(message.getPayloadLength());
         System.out.println(message.getPayload());
-        this.sessions.forEach(s -> {
+        sessions.forEach(s-> {
             try {
                 s.sendMessage(message);
             } catch (IOException e) {
@@ -48,7 +62,8 @@ public class Handler extends BinaryWebSocketHandler {
 
      @Override
      protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) throws Exception {
-         sessions.forEach(s-> {
+         System.out.println(message.getPayloadLength());
+        sessions.forEach(s-> {
              try {
                  s.sendMessage(message);
              } catch (IOException e) {
@@ -58,14 +73,8 @@ public class Handler extends BinaryWebSocketHandler {
      }
 
     @Override
-    protected void handlePongMessage(WebSocketSession session, PongMessage message) throws Exception {
-        sessions.forEach(s-> {
-            try {
-                s.sendMessage(message);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
+    public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+        super.handleTransportError(session, exception);
     }
 
     @Override

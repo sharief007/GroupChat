@@ -63,6 +63,7 @@ $("#sendVideoButton").on("click",async ()=> {
 
 $("#sendLinkButton").on("click",(event)=> {
     let URL = $("#URL").val();
+    $("#URL").val(" ");
     const platform = $("#exampleFormControlSelect2").val();
     if (URL.toString() !== '') {
         if (platform === 'youtube') {
@@ -80,13 +81,19 @@ $("#sendLinkButton").on("click",(event)=> {
         }
         console.log(URL);
     }
+    let date =new Date();
+    let messageTime = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    let datePart = date.toLocaleDateString(undefined, {month: "short", day: "numeric"});
     messageOptions = {
         id:id,
         user:username,
         action:"message",
         type:"text/link",
         platform:platform,
+        time: `${messageTime} | ${datePart}`,
         content: URL
     }
     websocket.send(JSON.stringify(messageOptions));
+    $("#linkPreview").text(" ");
+    $("#modalForLinks").modal("toggle");
 })

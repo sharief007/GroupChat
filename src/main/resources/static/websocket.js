@@ -17,6 +17,7 @@ $("#getInForm").on("submit",async (e)=> {
     console.log(`Loged in as ${username}`);
 
     websocket = new WebSocket("wss://sharief-groupchat.herokuapp.com/websocket");
+    //websocket = new WebSocket("ws://localhost:1111/websocket");
     console.log(websocket);
 
 
@@ -30,6 +31,7 @@ $("#getInForm").on("submit",async (e)=> {
     websocket.onmessage = (event) => {
       try {
         let data = JSON.parse(event.data);
+        console.log(data);
         switch (data.action) {
           case "message":
             handleMessage(data);
@@ -50,7 +52,7 @@ $("#getInForm").on("submit",async (e)=> {
         }
       }catch (err) {
         console.log(err);
-        //handleVideoBlob(event.data);
+        newMethod(event.data);
       }
     }
 
@@ -70,7 +72,7 @@ function showJoinedUser(data)
   .appendTo("#chatBody");
 
   $('#chatBody').animate({
-   scrollTop: $('#chatBody').get(0).scrollHeight}, 2000); 
+   scrollTop: $('#chatBody').get(0).scrollHeight}, 1000);
 
 
   //add user in grouplist
@@ -87,7 +89,7 @@ function showLeftedUser(data) {
       .appendTo("#chatBody");
 
    $('#chatBody').animate({
-   scrollTop: $('#chatBody').get(0).scrollHeight}, 2000); 
+   scrollTop: $('#chatBody').get(0).scrollHeight}, 1000);
 
 }
 
@@ -96,7 +98,7 @@ function handleMessage(jsonData) {
     addTextMessage(jsonData);
   } else if (jsonData.type==="image"){
     addImageMessage(jsonData);
-  }else if (jsonData.type==="video"){
+  }else if (jsonData.type.toString().includes("video")){
     addVideoMessage(jsonData);
   } else if (jsonData.type==="text/link"){
     addLinkMessage(jsonData)
@@ -130,7 +132,7 @@ function addTextMessage(jsonObject) {
     }).text(jsonObject.content)).appendTo("#chatBody");
     
     $('#chatBody').animate({
-   scrollTop: $('#chatBody').get(0).scrollHeight}, 2000); 
+   scrollTop: $('#chatBody').get(0).scrollHeight}, 1000);
     
   }
 }
@@ -144,7 +146,7 @@ function addImageMessage(jsonObject) {
       class: "msg-div sent"
     }).append($("<img/>",{
       class: "img-fluid img-thumbnail",
-      src: jsonObject.content.toString()
+      src: jsonObject.content
     })).appendTo("#chatBody");
   }
   else {
@@ -153,7 +155,7 @@ function addImageMessage(jsonObject) {
       class: "msg-div receive"
     }).append(metadata,$("<img>",{
       class: "img-fluid img-thumbnail",
-      src: jsonObject.content.toString()
+      src: jsonObject.content
     })).appendTo("#chatBody");
   }
 }
@@ -169,7 +171,7 @@ function addVideoMessage(jsonObject) {
       height: "100%",
       width: "100%",
       controls: true,
-      srcObject: jsonObject.content.toString()
+      srcObject: jsonObject.content
     })).appendTo("#chatBody");
   }
   else {
@@ -193,26 +195,28 @@ function addLinkMessage(jsonObject) {
   if (platform==="youtube"||platform==="facebook"){
     if(sent)
     {
-      $("<div/>",{
+      let frame = $("<div/>",{
         class: 'msg-div sent'
       }).append($("<div/>",{
             class: 'embed-responsive embed-responsive-16by9'
-          }).append("<iframe>",{
+          }).append($("<iframe>",{
             src: jsonObject.content.toString(),
             class: "embed-responsive-item"
-          })
-      ).appendTo("#chatBody");
+          })));
+      frame.appendTo("#chatBody");
+      playAudio1();
     } else {
       let metadata = $("<div/>").append($("<small>").text(jsonObject.user+"\t"),$("<small>").text(jsonObject.time));
       $("<div/>",{
         class: 'msg-div receive'
       }).append(metadata, $("<div/>",{
             class: 'embed-responsive embed-responsive-16by9'
-          }).append("<iframe>",{
-            src: jsonObject.content,
+          }).append($("<iframe>",{
+            src: jsonObject.content.toString(),
             class: "embed-responsive-item"
-          })
+          }))
       ).appendTo("#chatBody");
+      playAudio2();
     }
   }
   else if(platform==="others"){
@@ -221,21 +225,25 @@ function addLinkMessage(jsonObject) {
       $("<div/>",{
         class: 'msg-div sent'
       }).append($("<a/>",{
-            class: 'message-text bg-primary text-light',
+            class: 'message-text bg-info text-light',
             href: jsonObject.content.toString(),
             target: "_blank"
-          }).text(jsonObject.content)
+          }).text("you sent a link")
       ).appendTo("#chatBody");
+      playAudio1();
     } else {
       let metadata = $("<div/>").append($("<small>").text(jsonObject.user+"\t"),$("<small>").text(jsonObject.time));
       $("<div/>",{
         class: 'msg-div receive'
       }).append(metadata, $("<a/>",{
-        class: 'message-text bg-light',
+        class: 'message-text bg-info text-light',
         href: jsonObject.content.toString(),
         target: "_blank"
-      }).text(jsonObject.content)).appendTo("#chatBody");
+      }).text(`${jsonObject.user} sent a link`)).appendTo("#chatBody");
+      playAudio2();
     }
   }
+  $('#chatBody').animate({
+    scrollTop: $('#chatBody').get(0).scrollHeight}, 1000);
 }
 
