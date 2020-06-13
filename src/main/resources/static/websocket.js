@@ -7,7 +7,7 @@ $("document").ready(()=> {
   $("#getInModal").modal({
     backdrop: false
   });
-  playAudio1();
+  //playAudio1();
 });
 
 $("#getInForm").on("submit",async (e)=> {
@@ -96,6 +96,8 @@ function handleMessage(jsonData) {
 }
 
 function addTextMessage(jsonObject) {
+  playAudio1();
+
   let sent = (jsonObject.id === this.id);
   if(sent)
   {
@@ -106,9 +108,11 @@ function addTextMessage(jsonObject) {
     }).text(jsonObject.content)
     ).appendTo("#chatBody");
     
-    playAudio1();
+    $("#chatBody").scrollTop = $("#chatBody").scrollHeight;
     
   } else {
+    
+     playAudio2();
     let metadata = $("<div/>").append($("<small>").text(jsonObject.user+"\t"),$("<small>").text(jsonObject.time));
     $("<div/>",{
       class: 'msg-div receive'
@@ -116,7 +120,7 @@ function addTextMessage(jsonObject) {
       class: 'message-text bg-light'
     }).text(jsonObject.content)).appendTo("#chatBody");
     
-    playAudio2();
+    $("#chatBody").scrollTop = $("#chatBody").scrollHeight;
     
   }
 }
