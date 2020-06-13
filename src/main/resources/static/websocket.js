@@ -7,6 +7,7 @@ $("document").ready(()=> {
   $("#getInModal").modal({
     backdrop: false
   });
+  playAudio1();
 });
 
 $("#getInForm").on("submit",async (e)=> {
@@ -105,9 +106,7 @@ function addTextMessage(jsonObject) {
     }).text(jsonObject.content)
     ).appendTo("#chatBody");
     
-    
-    var audio = $("#messageAudio");
-    audio.play();
+    playAudio1();
     
   } else {
     let metadata = $("<div/>").append($("<small>").text(jsonObject.user+"\t"),$("<small>").text(jsonObject.time));
@@ -117,9 +116,7 @@ function addTextMessage(jsonObject) {
       class: 'message-text bg-light'
     }).text(jsonObject.content)).appendTo("#chatBody");
     
-    
-    var audio = $("#messageAudio2");
-    audio.play();
+    playAudio2();
     
   }
 }
