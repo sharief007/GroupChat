@@ -16,7 +16,7 @@ $("#getInForm").on("submit",async (e)=> {
     username = $("#inputUsername").val();
     console.log(`Loged in as ${username}`);
 
-    websocket = new WebSocket("wss://socket-group-chat-app.herokuapp.com/websocket");
+    websocket = new WebSocket("wss://sharief-groupchat.herokuapp.com/websocket");
     console.log(websocket);
 
 
