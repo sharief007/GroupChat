@@ -30,7 +30,7 @@ public class WebSocketConfigurer implements org.springframework.web.socket.confi
         container.setMaxTextMessageBufferSize(1000000);
         container.setMaxBinaryMessageBufferSize(1000000);
         container.setAsyncSendTimeout(6000000l);
-        container.getMaxSessionIdleTimeout(6000000l);
+        container.setMaxSessionIdleTimeout(6000000l);
         return container;
     }
 }
