@@ -1,36 +1,27 @@
 package web.sockets.chat.configuration;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.socket.client.WebSocketClient;
-import org.springframework.web.socket.client.standard.WebSocketContainerFactoryBean;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
-import org.springframework.web.socket.server.HandshakeInterceptor;
-import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
-import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
-
-import javax.websocket.ContainerProvider;
-import javax.websocket.WebSocketContainer;
-import java.net.Socket;
+import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
+import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
 @Configuration
-@EnableWebSocket
-public class WebSocketConfigurer implements org.springframework.web.socket.config.annotation.WebSocketConfigurer {
-
-    private WebSocketContainer webSocketContainer;
+@EnableWebSocketMessageBroker
+public class WebSocketConfigurer implements WebSocketMessageBrokerConfigurer {
 
     @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry webSocketHandlerRegistry) {
-        webSocketHandlerRegistry.addHandler(new Handler(),"/websocket").setAllowedOrigins("*").addInterceptors(new HttpSessionHandshakeInterceptor());
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        config.enableSimpleBroker("/topic","/queue");
+        config.setApplicationDestinationPrefixes("/app");
     }
-    @Bean
-    public ServletServerContainerFactoryBean createWebSocketContainer() {
-        ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
-        container.setMaxTextMessageBufferSize(1000000);
-        container.setMaxBinaryMessageBufferSize(1000000);
-        container.setAsyncSendTimeout(600000l);
-        container.setMaxSessionIdleTimeout(600000l);
-        return container;
+
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+         registry.addEndpoint("/chat")
+                 .setAllowedOrigins("http://localhost:8080/")
+                 .setHandshakeHandler(new DefaultHandshakeHandler())
+                 .withSockJS();
     }
 }

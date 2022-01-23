@@ -1,6 +1,5 @@
 HELP.md
 target/
-!.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**
 
@@ -29,3 +28,16 @@ build/
 
 ### VS Code ###
 .vscode/
+
+.mvn
+mvnw
+mvnw.cmd
+
+client/node_modules
+client/npm-debug.log*
+client/yarn-debug.log*
+client/yarn-error.log*
+client/pnpm-debug.log*
+client/.env.local
+client/.env.*.local
+client/dist
