@@ -35,6 +35,13 @@ export default new Vuex.Store({
         setInterval(()=>client.send("/app/room",JSON.stringify(new Date().toISOString)),1000)
       }, err=>console.log(JSON.stringify(err)))
       commit('SET_STOMP_CLIENT',client)
+    },
+    sendMessage({state}, message) {
+      if(state.stompClient !== null) {
+        state.stompClient.send('/app/room', JSON.stringify(message))
+      } else {
+        this.dispatch('createStompClient')
+      }
     }
   },
   modules: {
